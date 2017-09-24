@@ -1,4 +1,4 @@
-package indi.sword.util.base;
+package indi.sword.shiro.helloworld.base;
 
 import java.util.*;
 import java.util.concurrent.Callable;
