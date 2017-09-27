@@ -28,7 +28,7 @@ public class ShiroHandler {
             // rememberme
             token.setRememberMe(true);
             try {
-                System.out.println("1. " + token.hashCode());
+//                System.out.println("token.hashCode -> " + token.hashCode());
                 // 执行登录.
                 currentUser.login(token);
             }

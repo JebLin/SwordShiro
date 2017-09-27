@@ -57,12 +57,12 @@
     	3.1 直接配置实现了 org.apache.shiro.realm.Realm 接口的 bean
     -->
     <bean id="jdbcRealm" class="indi.sword.shiro.realms.ShiroRealm">
-        <!--<property name="credentialsMatcher">-->
-        <!--<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
-            <!--<property name="hashAlgorithmName" value="MD5"></property>-->
-            <!--<property name="hashIterations" value="1024"></property>-->
-        <!--</bean>-->
-    <!--</property>-->
+        <property name="credentialsMatcher">
+        <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+            <property name="hashAlgorithmName" value="MD5"></property> <!-- 加密算法：会把前台过来的密码MD5加密 -->
+            <property name="hashIterations" value="1024"></property> <!-- 加密再加密再加密，1024次数 -->
+        </bean>
+    </property>
     </bean>
 
     <bean id="secondRealm" class="indi.sword.shiro.realms.SecondRealm">
@@ -133,7 +133,7 @@
                 -->
                 /login.jsp = anon
                 /shiro/login = anon
-                <!--/shiro/logout = logout-->
+                /shiro/logout = logout
 
                 <!--/user.jsp = roles[user]-->
                 <!--/admin.jsp = roles[admin]-->
@@ -144,8 +144,8 @@
                 ？:匹配一个字符 ，如 /admin?  将匹配 /admin1,但是不匹配 /admin 或者子路径 /admin/1
                 * :匹配一个或者多个字符，如 /admin* 将匹配 /admin /admin1 但是不匹配子路径 /admin/1
                 **:匹配路径中的零个或者多个路径 ，如 /admin** 将匹配 /admin /admin1 admin/1 admin/a/b 等等-->
-                /** = anon
-                <!--/** = authc-->
+                /** = authc
+
             </value>
         </property>
 

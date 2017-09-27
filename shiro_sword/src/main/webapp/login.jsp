@@ -14,7 +14,7 @@
 	
 	<h4>Login Page</h4>
 	
-	<form action="<%=basePath%>shiro/login.do" method="POST">
+	<form action="shiro/login" method="POST">
 		username: <input type="text" name="username"/>
 		<br><br>
 		
