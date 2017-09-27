@@ -3,32 +3,13 @@ package indi.sword.shiro.realms;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.AuthenticatingRealm;
 
-public class ShiroRealm implements Realm{
-    private HashedCredentialsMatcher credentialsMatcher;
+public class ShiroRealm extends AuthenticatingRealm {
 
     @Override
-    public String getName() {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        System.out.println("doGetAuthenticationInfo:token -> " + authenticationToken);
         return null;
-    }
-
-    @Override
-    public boolean supports(AuthenticationToken token) {
-        return false;
-    }
-
-    @Override
-    public AuthenticationInfo getAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        return null;
-    }
-
-    public void setCredentialsMatcher(HashedCredentialsMatcher credentialsMatcher) {
-        this.credentialsMatcher = credentialsMatcher;
-    }
-
-    public HashedCredentialsMatcher getCredentialsMatcher() {
-        return credentialsMatcher;
     }
 }
