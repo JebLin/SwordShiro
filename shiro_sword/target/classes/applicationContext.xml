@@ -14,6 +14,7 @@
     -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="cacheManager" ref="cacheManager"/>
+        <!-- 、Authenticator 才是真正的身份验证者，ShiroAPI 中核心的身份认证入口点，此处可以自定义插入自己的实现。-->
         <property name="authenticator" ref="authenticator"></property>
 
         <property name="realms">
@@ -23,7 +24,8 @@
             </list>
         </property>
 
-        <!--<property name="rememberMeManager.cookie.maxAge" value="10"></property>-->
+        <!-- 设置“记住我”的时间，也就是cookie时间 -->
+        <property name="rememberMeManager.cookie.maxAge" value="10"></property>
     </bean>
 
     <!-- Let's use some enterprise caching support for better performance.  You can replace this with any enterprise
@@ -66,12 +68,12 @@
     </bean>
 
     <bean id="secondRealm" class="indi.sword.shiro.realms.SecondRealm">
-        <!--<property name="credentialsMatcher">-->
-            <!--<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
-                <!--<property name="hashAlgorithmName" value="SHA1"></property>-->
-                <!--<property name="hashIterations" value="1024"></property>-->
-            <!--</bean>-->
-        <!--</property>-->
+        <property name="credentialsMatcher">
+        <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+            <property name="hashAlgorithmName" value="SHA1"></property>
+            <property name="hashIterations" value="1024"></property>
+        </bean>
+    </property>
     </bean>
 
     <!-- =========================================================
@@ -108,56 +110,101 @@
     6.1 id 必须和 web.xml 文件中配置的 DelegatingFilterProxy 的 <filter-name> 一致.
                       若不一致, 则会抛出: NoSuchBeanDefinitionException. 因为 Shiro 会来 IOC 容器中查找和 <filter-name> 名字对应的 filter bean.
     -->
+
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login.jsp"/>
         <property name="successUrl" value="/list.jsp"/>
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
 
-        <!--<property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property>-->
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property>
+<!--
 
-        <!--
+        &lt;!&ndash;
         	配置哪些页面需要受保护.
         	以及访问这些页面需要的权限. 如果没有权限，会自动重定向到login.jsp页面
         	1). anon 可以被匿名访问 （anonymous 表示不需要登录就可以访问）
         	2). authc 必须认证(即登录)后才可能访问的页面.(authentication)
         	3). logout 登出.
         	4). roles 角色过滤器
-        -->
-
+        &ndash;&gt;
+        &lt;!&ndash;因为用了上面那一句的 filterChainDefinitionMap，于是就不把角色配置写在这里了。&ndash;&gt;
         <property name="filterChainDefinitions">
             <value>
-                <!--
+                &lt;!&ndash;
                     [urls]部分的配置，其格式是：“url=拦截器[参数]，拦截器[参数]”
                     如果当前请求的url匹配[urls]部分的某个url模式，将会执行其配置的拦截器。
-                -->
+                    org.apache.shiro.web.filter.mgt.DefaultFilter 查看拦截器种类
+                &ndash;&gt;
                 /login.jsp = anon
                 /shiro/login = anon
                 /shiro/logout = logout
 
-                <!--/user.jsp = roles[user]-->
-                <!--/admin.jsp = roles[admin]-->
+                &lt;!&ndash;测试用&ndash;&gt;
+                /shiro/testShiroAnnotation_guest = anon
 
-                # everything else requires authentication:
-                <!--
+                /user.jsp = roles[user]
+                /admin.jsp = roles[admin]
+
+                &lt;!&ndash;# everything else requires authentication:
                 通配符wildcard，注意通配符匹配不包括目录分隔符 “/”.
                 ？:匹配一个字符 ，如 /admin?  将匹配 /admin1,但是不匹配 /admin 或者子路径 /admin/1
                 * :匹配一个或者多个字符，如 /admin* 将匹配 /admin /admin1 但是不匹配子路径 /admin/1
-                **:匹配路径中的零个或者多个路径 ，如 /admin** 将匹配 /admin /admin1 admin/1 admin/a/b 等等-->
+                **:匹配路径中的零个或者多个路径 ，如 /admin** 将匹配 /admin /admin1 admin/1 admin/a/b 等等&ndash;&gt;
                 /** = authc
 
             </value>
         </property>
-
+-->
     </bean>
 
     <!--&lt;!&ndash; 配置一个 bean, 该 bean 实际上是一个 Map. 通过实例工厂方法的方式 &ndash;&gt;-->
-    <!--<bean id="filterChainDefinitionMap"-->
-          <!--factory-bean="filterChainDefinitionMapBuilder" factory-method="buildFilterChainDefinitionMap"></bean>-->
+    <bean id = "filterChainDefinitionMap"
+        factory-bean="FilterChainDefinitionMapBuilder" factory-method="buildFactoryChainDefinationMap">
+    </bean>
 
-    <!--<bean id="filterChainDefinitionMapBuilder"-->
-          <!--class="com.atguigu.shiro.factory.FilterChainDefinitionMapBuilder"></bean>-->
+    <bean id = "FilterChainDefinitionMapBuilder"
+          class = "indi.sword.shiro.factory.FilterChainDefinitionMapBuilder"></bean>
 
-    <!--<bean id="shiroService"-->
-          <!--class="com.atguigu.shiro.services.ShiroService"></bean>-->
+    <!-- 把ShiroService配置到IOC容器中去 -->
+    <bean id="shiroService"
+          class="indi.sword.shiro.service.ShiroService"></bean>
+
+<!--
+
+
+    &lt;!&ndash; Session ID 生成器 &ndash;&gt;
+    <bean id = "sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+    &lt;!&ndash; 会话管理器 &ndash;&gt;
+    <bean id="sessionManager" class="org.apache.shiro.session.mgt.DefaultSessionManager">
+        <property name="globalSessionTimeout" value="1800000" />
+        <property name="deleteInvalidSessions" value="true" />
+        <property name="sessionValidationSchedulerEnabled" value="true" />
+        <property name="sessionDAO" ref="sessionDao" />
+    </bean>
+
+    &lt;!&ndash; Session Dao 继承EnterpriseCacheSessionDao &ndash;&gt;
+    <bean id = "sessionDao" class="indi.sword.shiro.dao.MySessionDao">
+        <property name="activeSessionsCache" value="shiro-activesSessionCache" />
+        <property name="sessionIdGenerator" value="sessionIdGenerator" />
+    </bean>
+
+-->
+
+    <!--
+
+    &lt;!&ndash; 配置jdbc &ndash;&gt;
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    &lt;!&ndash; 配置数据源 &ndash;&gt;
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.driver" />
+        <property name="url" value="jdbc::mysql//localhost:3306/myshirojdbcdb" />
+        <property name="username" value="root" />
+        <property name="password" value="123456" />
+    </bean>
+-->
 </beans>

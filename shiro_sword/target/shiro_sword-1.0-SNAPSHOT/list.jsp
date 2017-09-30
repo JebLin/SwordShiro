@@ -11,22 +11,26 @@
 <body>
 	
 	<h4>List Page</h4>
-	
-	Welcome: <shiro:principal></shiro:principal>
-	
+	Welcome : <shiro:principal></shiro:principal>
 	<shiro:hasRole name="admin">
-	<br><br>
-	<a href="admin.jsp">Admin Page</a>
+		<br><br>
+		<a href = "admin.jsp">Admin Page</a>
 	</shiro:hasRole>
-	
 	<shiro:hasRole name="user">
-	<br><br>
-	<a href="user.jsp">User Page</a>
+		<br><br>
+		<a href="user.jsp">User Page</a>
 	</shiro:hasRole>
-	
+
 	<br><br>
-	<a href="shiro/testShiroAnnotation">Test ShiroAnnotation</a>
-	
+	<a href="shiro/testShiroAnnotation_admin">Test ShiroAnnotation</a>
+	<br><br>
+	<a href="shiro/testShiro_Session">Test Shiro_Session</a>
+<%--
+	<br><br>
+	<a href="admin.jsp" name="admin">Admin Page</a>
+	<br><br>
+	<a href="user.jsp" name="user">User Page</a>
+--%>
 	<br><br>
 	<a href="shiro/logout">Logout</a>
 	

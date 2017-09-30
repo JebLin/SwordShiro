@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
  * Simple Quickstart application showing how to use Shiro's API.
  *
  * 编写shiro.ini，测试类
- *
- *
  * @Author:rd_jianbin_lin
  * @Date: 13:10 2017/9/24
  */
