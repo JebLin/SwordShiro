@@ -15,6 +15,7 @@ Shiro可以完成：认证、授权、加密、会话管理、与Web集成、缓
 | web Support | Caching |
 | Concurrency、Testing | "Run As" 、Remember me| 
 
+
 ```
 Authentication ：身份认证 / 登录 ，验证用户是不是拥有相应的身份；
 Authorization ：授权，即权限验证。验证某个已认证的用户是否拥有某个权限；即判断用户是否能进行什么操作，如：验证某个用户是否拥有某个角色。或者 颗粒度的验证某个用户对某个资源是否具有某个权限。
